@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
  */
@@ -17,6 +17,12 @@ class Product
     private $id;
 
     /**
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Your title must be at least {{ limit }} characters long",
+     *      maxMessage = "Your title cannot be longer than {{ limit }} characters"
+     * )
      * @ORM\Column(type="string", length=255)
      */
     private $title;
@@ -27,11 +33,18 @@ class Product
     private $description;
 
     /**
+     * @Assert\Type(
+     *     type="float",
+     *     message="The value {{ value }} is not a valid {{ float }}."
+     * )
      * @ORM\Column(type="float")
      */
     private $price;
 
     /**
+     * @Assert\Url(
+     *    message = "The url '{{ value }}' is not a valid url",
+     * )
      * @ORM\Column(type="string", length=255)
      */
     private $image;
