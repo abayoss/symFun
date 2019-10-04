@@ -1,0 +1,24 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    {# <div class="row pb-5 ">
+        <button type="button" onclick="location.href='/products/new'" class="btn btn-primary btn-lg btn-block">add new product</button>
+    </div> #}
+    <div class="row">
+        {% for item in products %}
+            <div class="col-4 mt-2">
+                <div class="card">
+                    <div class="card-body">
+                        <img src="{{item.image}}?{{item.price}}" class="img-fluid mb-2" alt="{{item.title}}">
+                        <h4 class="card-title">{{item.title}}</h4>
+                        <p class="card-text">{{item.description}}</p>
+                        <p class="card-text">{{item.price}}
+                            $</p>
+                        <button onclick="location.href='/product/{{item.id}}'" class="btn btn-primary btn-sm">View</button>
+                        <button onclick="location.href='/product/edit/{{item.id}}'" class="btn btn-warning btn-sm mx-2">Edit</button>
+                        <button onclick="location.href='/product/delete/{{item.id}}'" class="btn btn-danger btn-sm">Delete</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

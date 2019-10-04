@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    <div class="row">
+        <button type="button" onclick="window.history.back();" class="btn btn-secondary btn-block">go back</button>
+    </div>
+    <div class="row" id="output">
+            <div class="card">
+                <div class="card-body text-center">
+                    <img src="{{product.image}}?{{product.price}}" 
+                    class="img-fluid mb-2"
+                    alt="{{product.title}}" 
+                    style="max-width: 50%;">
+                        <h4 class="card-title">{{product.title}}</h4>
+                        <p class="card-text">{{product.description}}</p>
+                        <p class="card-text">{{product.price}}
+                            $</p>
+                    {# <button onclick="deletePost('45')" class="btn btn-danger btn-sm">Delete</button> #}
+                    <button onclick="location.href ='delete/{{product.id}}'" class="btn btn-danger btn-sm">Delete</button>
+                    <button onclick="location.href ='edit/{{product.id}}';" class="btn btn-warning btn-sm mx-2">Edit</button>
+                </div>
+            </div>
+    </div>
+{% endblock %}
