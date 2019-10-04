@@ -3,6 +3,7 @@
 namespace App\Controller\web;
 
 use App\Entity\Product;
+use App\Form\ProductType;
 use App\Repository\ProductRepository;
 
 use Doctrine\Common\Persistence\ObjectManager;
@@ -40,34 +41,19 @@ class ProductController extends AbstractController
     {
         $product = new Product();
 
-        $form = $this->createFormBuilder($product)
-            ->add('title', TextType::class, array('attr' => array('class' => 'form-control mb-2')))
-            ->add('description', TextareaType::class, array(
-                'required' => true,
-                'attr' => array('class' => 'form-control mb-2')
-                ))
-            ->add('image', TextType::class, array('attr' => array('class' => 'form-control mb-2')))
-            ->add('price', IntegerType::class, array(
-                'required' => true,
-                'attr' => array('class' => 'form-control mb-2')
-            ))
-            ->add('save', SubmitType::class, array(
-                'label' => 'Create',
-                'attr' => array('class' => 'btn btn-primary btn-block mt-3')
-            ))
-            ->getForm();
+        $form = $this->createForm(ProductType::class, $product);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->getData();
-            // $entityManager = $this->getDoctrine()->getManager();
             $manager->persist($product);
             $manager->flush();
 
             return $this->redirectToRoute('products');
         }
         return $this->render('product/new.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'isEdit' => false
         ));
     }
     /**
@@ -75,39 +61,24 @@ class ProductController extends AbstractController
      */
     public function updateProduct(Product $product, Request $request, ObjectManager $manager)
     {
-        $form = $this->createFormBuilder($product)
-            ->add('title', TextType::class, array('attr' => array('class' => 'form-control mb-2')))
-            ->add('description', TextareaType::class, array(
-                'required' => true,
-                'attr' => array('class' => 'form-control mb-2')
-                ))
-            ->add('image', TextType::class, array('attr' => array('class' => 'form-control mb-2')))
-            ->add('price', IntegerType::class, array(
-                'required' => true,
-                'attr' => array('class' => 'form-control mb-2')
-            ))
-            ->add('save', SubmitType::class, array(
-                'label' => 'Update',
-                'attr' => array('class' => 'btn btn-warning btn-block mt-3')
-            ))
-            ->getForm();
+        $form = $this->createForm(ProductType::class, $product);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->getData();
-            // $entityManager = $this->getDoctrine()->getManager();
             $manager->flush();
 
             return $this->redirectToRoute('products');
         }
         return $this->render('product/edit.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'isEdit' => true
         ));
     }
     /**
      * @Route("/product/delete/{id}", name="deleteProduct", methods={"GET"})
      */
-    public function deleteProduct(Product $product, Request $request, ObjectManager $manager)
+    public function deleteProduct(Product $product, ObjectManager $manager)
     {
         $manager->remove($product);
         $manager->flush();
