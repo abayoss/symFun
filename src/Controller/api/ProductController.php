@@ -31,10 +31,18 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product", name="APInewProduct", methods={"POST"})
      */
-    public function newProduct(Request $request,ObjectManager $manager)
+    public function newProduct(Request $request, ObjectManager $manager)
     {
         $req = $request->request;
         $product = new Product;
+        if (
+            !$req->get('title')
+            & !$req->get('description')
+            & !$req->get('price')
+            & !$req->get('image')
+        ) {
+            return $this->json("please send some data");
+         }
         if ($req->get('title')) {
             $product->setTitle($req->get('title'));
         } else {
@@ -55,19 +63,26 @@ class ProductController extends AbstractController
         } else {
             $product->setImage("https://cdn.dribbble.com/users/844846/screenshots/2855815/no_image_to_show_.jpg");
         }
-        
+
         $manager->persist($product);
         $manager->flush();
 
         return $this->json($product);
     }
     /**
-     * @Route("/api/product/{id}/update", name="APIupdateProduct", methods={"POST"})
+     * @Route("/api/product/edit/{id}", name="APIupdateProduct", methods={"POST"})
      */
-    public function updateProduct(Product $product, Request $request,ObjectManager $manager)
+    public function updateProduct(Product $product, Request $request, ObjectManager $manager)
     {
         $req = $request->request;
-
+        if (
+            !$req->get('title')
+            & !$req->get('description')
+            & !$req->get('price')
+            & !$req->get('image')
+        ) {
+            return $this->json("please send some data to modify");
+         }
         if ($req->get('title')) {
             $product->setTitle($req->get('title'));
         }
@@ -89,7 +104,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product/{id}", name="APIdeleteProduct", methods={"DELETE"})
      */
-    public function deleteProduct(Product $product, Request $request,ObjectManager $manager)
+    public function deleteProduct(Product $product, Request $request, ObjectManager $manager)
     {
         $manager->remove($product);
         $manager->flush();
