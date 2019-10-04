@@ -36,10 +36,13 @@ class ProductController extends AbstractController
     }
     /**
      * @Route("/products/new", name="newProduct", methods={"POST","GET"})
+     * @Route("/product/edit/{id}", name="updateProduct", methods={"POST","GET"})
      */
-    public function newProduct(Request $request, ObjectManager $manager)
+    public function newProduct(Product $product = null, Request $request, ObjectManager $manager)
     {
-        $product = new Product();
+        if (!$product) {
+            $product = new Product();
+        }
 
         $form = $this->createForm(ProductType::class, $product);
 
@@ -51,30 +54,12 @@ class ProductController extends AbstractController
 
             return $this->redirectToRoute('products');
         }
-        return $this->render('product/new.html.twig', array(
+        return $this->render('product/submit.html.twig', array(
             'form' => $form->createView(),
-            'isEdit' => false
+            'isEdit' => $product->getId() !== null,
         ));
     }
-    /**
-     * @Route("/product/edit/{id}", name="updateProduct", methods={"POST","GET"})
-     */
-    public function updateProduct(Product $product, Request $request, ObjectManager $manager)
-    {
-        $form = $this->createForm(ProductType::class, $product);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $product = $form->getData();
-            $manager->flush();
-
-            return $this->redirectToRoute('products');
-        }
-        return $this->render('product/edit.html.twig', array(
-            'form' => $form->createView(),
-            'isEdit' => true
-        ));
-    }
     /**
      * @Route("/product/delete/{id}", name="deleteProduct", methods={"GET"})
      */

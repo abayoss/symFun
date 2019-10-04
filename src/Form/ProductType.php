@@ -17,20 +17,6 @@ class ProductType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            // ->add('title', TextType::class, array('attr' => array('class' => 'form-control mb-2')))
-            // ->add('description', TextareaType::class, array(
-            //     'required' => true,
-            //     'attr' => array('class' => 'form-control mb-2')
-            // ))
-            // ->add('price', IntegerType::class, array(
-            //     'required' => true,
-            //     'attr' => array('class' => 'form-control mb-2')
-            // ))
-            // ->add('image', TextType::class, array('attr' => array('class' => 'form-control mb-2')))
-            // ->add('save', SubmitType::class, array(
-            //     'label' => 'Submit',
-            //     'attr' => array('class' => 'btn btn-primary btn-block mt-3')
-            // ))
             ->add('title')
             ->add('description')
             ->add('price')
