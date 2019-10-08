@@ -1,23 +1,66 @@
 {% extends "base.html.twig" %}
+{% block title %}{{product.title}}
+{% endblock %}
 {% block body %}
     <div class="row">
         <button type="button" onclick="window.history.back();" class="btn btn-secondary btn-block">go back</button>
     </div>
-    <div class="row" id="output">
-            <div class="card">
-                <div class="card-body text-center">
-                    <img src="{{product.image}}?{{product.price}}" 
-                    class="img-fluid mb-2"
-                    alt="{{product.title}}" 
-                    style="max-width: 50%;">
-                        <h4 class="card-title">{{product.title}}</h4>
-                        <p class="card-text">{{product.description}}</p>
-                        <p class="card-text">{{product.price}}
-                            $</p>
-                    {# <button onclick="deletePost('45')" class="btn btn-danger btn-sm">Delete</button> #}
-                    <button onclick="location.href ='delete/{{product.id}}'" class="btn btn-danger btn-sm">Delete</button>
-                    <button onclick="location.href ='edit/{{product.id}}';" class="btn btn-warning btn-sm mx-2">Edit</button>
+    {# show post #}
+    <div class="row mt-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <img src="{{product.image}}?{{product.price}}" class="img-fluid mb-2" alt="{{product.title}}" style="max-width: 50%;">
+                <h4 class="card-title">{{product.title}}</h4>
+                <p class="card-text">{{product.description}}</p>
+                <p class="card-text">{{product.price}}
+                    $</p>
+                <button onclick="location.href ='delete/{{product.id}}'" class="btn btn-danger btn-sm">Delete</button>
+                <button onclick="location.href ='edit/{{product.id}}'" class="btn btn-warning btn-sm mx-2">Edit</button>
+            </div>
+        </div>
+    </div>
+    {# add comment review #}
+    <div class="row mt-3">
+        <div class="card text-left" style="width: 100%;">
+            <div class="card-body">
+                <h4 class="card-title">Write a Review</h4>
+                {{form_start(form)}}
+                {{form_row(form.rating, {"attr" : {"class" : "form-control mb-2"}})}}
+                {{form_row(form.body, {"attr" : {"class" : "form-control mb-2"}})}}
+                <button type="submit" class="btn btn-primary btn-block">
+                    Add your Review
+                </button>
+                {{form_end(form)}}
+            </div>
+        </div>
+    </div>
+    {# show reviews and comments #}
+    <div class="row mt-3">
+        {% for review in product.reviews %}
+            <div class="card mt-3" style="width: 100%;">
+                <div class="card-body">
+                    <p class="card-text text-right">
+                        {% for i in 1..review.rating %}⭐
+                        {% endfor %}
+                    </p>
+                    <h4 class="card-title">{{review.mockUser}}</h4>
+                    <p class="card-text">{{review.body}}</p>
+                    <p class="card-text text-right">
+                        <small>{{review.createdAt | date("d/m/Y")}}</small>
+                        <button onclick="deleteReview({{review.id}})" class="mx-2 btn btn-danger btn-sm">Delete</button>
+                    </p>
                 </div>
             </div>
+        {% endfor %}
     </div>
+    <script>
+        const deleteReview = (reviewId) => {
+            fetch (`/product/review/delete/${reviewId}`).then(res => {
+                return res.json()
+            }).then(jres => {
+                alert(jres)
+                window.location.reload()
+            })
+        }
+    </script>
 {% endblock %}

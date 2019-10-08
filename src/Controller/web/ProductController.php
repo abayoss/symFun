@@ -3,6 +3,8 @@
 namespace App\Controller\web;
 
 use App\Entity\Product;
+use App\Entity\Review;
+use App\Form\ProductReviewType;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 
@@ -11,11 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class ProductController extends AbstractController
 {
@@ -28,11 +25,27 @@ class ProductController extends AbstractController
         return $this->render("product/products.html.twig", ["products" => $products]);
     }
     /**
-     * @Route("/product/{id}", name="getProduct", methods={"GET"})
+     * @Route("/product/{id}", name="getProduct")
      */
-    public function getProduct(Product $product)
+    public function getProduct(Product $product, Request $request, ObjectManager $manager)
     {
-        return $this->render("product/product.html.twig", ["product" => $product]);
+        // add Review 
+        $review = new Review();
+        $form = $this->createForm(ProductReviewType::class, $review);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $review = $form->getData();
+            $review->setMockUser('mock User');
+            $review->setProduct($product);
+            $review->setCreatedAt(new \DateTime());
+
+            $manager->persist($review);
+            $manager->flush();
+
+            $review = new Review();
+            $form = $this->createForm(ProductReviewType::class, $review);
+        }
+        return $this->render("product/product.html.twig", ["product" => $product, 'form' => $form->createView()]);
     }
     /**
      * @Route("/products/new", name="newProduct", methods={"POST","GET"})
@@ -69,5 +82,15 @@ class ProductController extends AbstractController
         $manager->flush();
 
         return $this->redirectToRoute('products');
+    }
+    /**
+     * @Route("/product/review/delete/{id}", name="deleteProductReview", methods={"GET"})
+     */
+    public function deleteProductReview(Review $review, ObjectManager $manager)
+    {
+        $manager->remove($review);
+        $manager->flush();
+
+        return $this->json('review deleted');
     }
 }
