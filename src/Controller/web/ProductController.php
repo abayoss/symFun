@@ -25,7 +25,7 @@ class ProductController extends AbstractController
         return $this->render("product/products.html.twig", ["products" => $products]);
     }
     /**
-     * @Route("/product/{id}", name="getProduct")
+     * @Route("/product/{id}", name="getProduct", methods={"POST","GET"})
      */
     public function getProduct(Product $product, Request $request, ObjectManager $manager)
     {
@@ -74,17 +74,17 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/product/delete/{id}", name="deleteProduct", methods={"GET"})
+     * @Route("/product/{id}", name="deleteProduct", methods={"DELETE"})
      */
     public function deleteProduct(Product $product, ObjectManager $manager)
     {
         $manager->remove($product);
         $manager->flush();
+        return $this->json('product deleted');
 
-        return $this->redirectToRoute('products');
     }
     /**
-     * @Route("/product/review/delete/{id}", name="deleteProductReview", methods={"GET"})
+     * @Route("/product/review/delete/{id}", name="deleteProductReview", methods={"DELETE"})
      */
     public function deleteProductReview(Review $review, ObjectManager $manager)
     {

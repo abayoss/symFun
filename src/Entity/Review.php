@@ -28,7 +28,7 @@ class Review
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="reviews")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $product;
 

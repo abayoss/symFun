@@ -25,7 +25,7 @@ class CircularReferenceHandler
     {
         switch ($object) {
             case $object instanceof Product:
-            return $this->router->generate('APIgetProduct', ['id' => $object->getId()]);
+            return $this->router->generate('ApiGetProduct', ['id' => $object->getId()]);
             // case $object instanceof Review:
             // return $this->router->generate('reviews', ['review' => $object->getId()]);
             // case $object instanceof TaskList:

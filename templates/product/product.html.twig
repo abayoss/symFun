@@ -1,5 +1,6 @@
 {% extends "base.html.twig" %}
-{% block title %}{{product.title}}
+{% block title %}
+    {{product.title}}
 {% endblock %}
 {% block body %}
     <div class="row">
@@ -14,7 +15,7 @@
                 <p class="card-text">{{product.description}}</p>
                 <p class="card-text">{{product.price}}
                     $</p>
-                <button onclick="location.href ='delete/{{product.id}}'" class="btn btn-danger btn-sm">Delete</button>
+                <button onclick="deleteProduct({{product.id}})" class="btn btn-danger btn-sm">Delete</button>
                 <button onclick="location.href ='edit/{{product.id}}'" class="btn btn-warning btn-sm mx-2">Edit</button>
             </div>
         </div>
@@ -55,7 +56,7 @@
     </div>
     <script>
         const deleteReview = (reviewId) => {
-            fetch (`/product/review/delete/${reviewId}`).then(res => {
+            fetch (`/product/review/delete/${reviewId}`, {method: 'DELETE'}).then(res => {
                 return res.json()
             }).then(jres => {
                 alert(jres)
