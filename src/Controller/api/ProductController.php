@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 class ProductController extends AbstractController
 {
     /**
@@ -61,8 +63,12 @@ class ProductController extends AbstractController
         }
         if ($req->get('image')) {
             $product->setImage($req->get('image'));
+        } else if ($request->files->get("image_file")) {
+            $imageFile = $request->files->get("image_file");
+            $fileName = $this->uploadImage($imageFile);
+            $product->setImage($fileName);
         } else {
-            $product->setImage("https://cdn.dribbble.com/users/844846/screenshots/2855815/no_image_to_show_.jpg");
+            $product->setImage("/uploads/images/products/no_image_to_show_-5d9fa1b8ad3ae.webp");
         }
 
         $manager->persist($product);
@@ -95,9 +101,14 @@ class ProductController extends AbstractController
         }
         if ($req->get('image')) {
             $product->setImage($req->get('image'));
+        } else if ($request->files->get("image_file")) {
+            $imageFile = $request->files->get("image_file");
+            $fileName = $this->uploadImage($imageFile);
+            $product->setImage($fileName);
+        } else {
+            $product->setImage("/uploads/images/products/no_image_to_show_-5d9fa1b8ad3ae.webp");
         }
         $manager->flush();
-
         return $this->json($product);
     }
     /**
@@ -138,5 +149,20 @@ class ProductController extends AbstractController
         $manager->flush();
 
         return $this->json('review deleted');
+    }
+    public function uploadImage(UploadedFile $imageFile)
+    {
+        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+        try {
+            $imageFile->move(
+                $this->getParameter('product_images_directory')
+                    . $this->getParameter('product_images_directory_URL'),
+                $newFilename
+            );
+        } catch (FileException $e) {
+            var_dump($e);
+        }
+        return $this->getParameter('product_images_directory_URL') . $newFilename;
     }
 }

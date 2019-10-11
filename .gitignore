@@ -7,3 +7,7 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> dev images ###
+/public/uploads/images/products/*
+###< dev images ###

@@ -4,17 +4,43 @@
         <button type="button" onclick="window.history.back();" class="btn btn-secondary btn-sm btn-block mx-3">go back</button>
     </div>
     {{form_start(form)}}
-    {{form_row(form.title, {"attr" : {"class" : "form-control mb-2"}})}}
-    {{form_row(form.description, {"attr" : {"class" : "form-control mb-2"}})}}
-    {{form_row(form.price, {"attr" : {"class" : "form-control mb-2"}})}}
-    {{form_row(form.image, {"attr" : {"class" : "form-control mb-2"}})}}
-    <button type="submit" name="submit" id="submit" class="btn btn-block {% if isEdit %} btn-warning {% else %}btn-primary{% endif %}">
-        {% if isEdit %}
-            Edit product
-        {% else %}
-            Add product
-        {% endif %}
-    </button>
+    <div class="form-group">
+        {{form_row(form.title, {"attr" : {"class" : "form-control "}})}}
+    </div>
+    <div class="form-group">
+        {{form_row(form.description, {"attr" : {"class" : "form-control "}})}}
+    </div>
+    <div class="form-group">
+        {{form_row(form.price, {"attr" : {"class" : "form-control "}})}}
+    </div>
+    <div
+        class="form-group">
+        {# {{form_row(form.image, {"attr" : {"class" : "form-control "}})}} #}
+        <li class="form-text text-danger" id="selectImageError">
+        {{form_row(form.image_File, {"attr" : {"class" : "form-control-file", 'hidden' : true, 'required' : false}})}}
+        </li>
+        <div class="form-group">
+            <button type="button" onclick="selectImage()" id="btnSelect" class="btn btn-warning ">
+                select image
+            </button>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" name="btnSubmit" id="btnSubmit" class="btn btn-block {% if isEdit %} btn-warning {% else %}btn-primary{% endif %}" disabled>
+            {% if isEdit %}
+                Edit product
+            {% else %}
+                Add product
+            {% endif %}
+        </button>
+    </div>
     {{form_end(form)}}
-
+    <script>
+        const selectImage = () => {
+            const btnSubmit = document.getElementById('btnSubmit');
+            const file = document.getElementById('product_image_File');
+            file.click()
+            btnSubmit.disabled = false;
+        }
+    </script>
 {% endblock %}

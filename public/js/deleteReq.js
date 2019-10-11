@@ -1,5 +1,5 @@
 const deleteProduct = (productId) => {
-    fetch (`/product/delete/${productId}`, {method: 'DELETE'}).then(res => {
+    fetch (`/product/${productId}`, {method: 'DELETE'}).then(res => {
         return res.json()
     }).then(jres => {
         alert(jres)
