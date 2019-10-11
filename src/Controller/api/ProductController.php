@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Service\ImageUploader;
 
 class ProductController extends AbstractController
 {
@@ -34,7 +35,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product", name="ApiNewProduct", methods={"POST"})
      */
-    public function newProduct(Request $request, ObjectManager $manager)
+    public function newProduct(Request $request, ObjectManager $manager, ImageUploader $imageUploader)
     {
         $req = $request->request;
         $product = new Product;
@@ -43,6 +44,7 @@ class ProductController extends AbstractController
             & !$req->get('description')
             & !$req->get('price')
             & !$req->get('image')
+            & !$request->files->get("image_file")
         ) {
             return $this->json("please send some data");
         }
@@ -65,7 +67,7 @@ class ProductController extends AbstractController
             $product->setImage($req->get('image'));
         } else if ($request->files->get("image_file")) {
             $imageFile = $request->files->get("image_file");
-            $fileName = $this->uploadImage($imageFile);
+            $fileName = $imageUploader->upload($imageFile);
             $product->setImage($fileName);
         } else {
             $product->setImage("/uploads/images/products/no_image_to_show_-5d9fa1b8ad3ae.webp");
@@ -79,7 +81,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/api/product/edit/{id}", name="ApiUpdateProduct", methods={"POST"})
      */
-    public function updateProduct(Product $product, Request $request, ObjectManager $manager)
+    public function updateProduct(Product $product, Request $request, ObjectManager $manager, ImageUploader $imageUploader)
     {
         $req = $request->request;
         if (
@@ -87,6 +89,7 @@ class ProductController extends AbstractController
             & !$req->get('description')
             & !$req->get('price')
             & !$req->get('image')
+            & !$request->files->get("image_file")
         ) {
             return $this->json("please send some data to modify");
         }
@@ -103,7 +106,7 @@ class ProductController extends AbstractController
             $product->setImage($req->get('image'));
         } else if ($request->files->get("image_file")) {
             $imageFile = $request->files->get("image_file");
-            $fileName = $this->uploadImage($imageFile);
+            $fileName = $imageUploader->upload($imageFile);
             $product->setImage($fileName);
         } else {
             $product->setImage("/uploads/images/products/no_image_to_show_-5d9fa1b8ad3ae.webp");
@@ -149,20 +152,5 @@ class ProductController extends AbstractController
         $manager->flush();
 
         return $this->json('review deleted');
-    }
-    public function uploadImage(UploadedFile $imageFile)
-    {
-        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-        $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-        try {
-            $imageFile->move(
-                $this->getParameter('product_images_directory')
-                    . $this->getParameter('product_images_directory_URL'),
-                $newFilename
-            );
-        } catch (FileException $e) {
-            var_dump($e);
-        }
-        return $this->getParameter('product_images_directory_URL') . $newFilename;
     }
 }

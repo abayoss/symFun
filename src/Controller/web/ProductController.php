@@ -15,6 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
 
+use App\Service\ImageUploader;
+
 class ProductController extends AbstractController
 {
     /**
@@ -52,7 +54,7 @@ class ProductController extends AbstractController
      * @Route("/products/new", name="newProduct", methods={"POST","GET"})
      * @Route("/product/edit/{id}", name="updateProduct", methods={"POST","GET"})
      */
-    public function newProduct(Product $product = null, Request $request, ObjectManager $manager)
+    public function newProduct(Product $product = null, Request $request, ObjectManager $manager, ImageUploader $imageUploader)
     {
         if (!$product) {
             $product = new Product();
@@ -65,7 +67,7 @@ class ProductController extends AbstractController
             $product = $form->getData();
             if ($form['image_File']->getData()) {
                 $imageFile = $form['image_File']->getData();
-                $fileName = $this->uploadImage($imageFile);
+                $fileName = $imageUploader->upload($imageFile);
                 $product->setImage($fileName);
             }
             if (!$product->getImage()) {
@@ -100,20 +102,5 @@ class ProductController extends AbstractController
         $manager->remove($review);
         $manager->flush();
         return $this->json('review deleted');
-    }
-    public function uploadImage(UploadedFile $imageFile)
-    {
-        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-        $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-        try {
-            $imageFile->move(
-                $this->getParameter('product_images_directory')
-                    . $this->getParameter('product_images_directory_URL'),
-                $newFilename
-            );
-        } catch (FileException $e) {
-            var_dump($e);
-        }
-        return $this->getParameter('product_images_directory_URL') . $newFilename;
     }
 }
