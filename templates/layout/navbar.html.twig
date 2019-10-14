@@ -16,9 +16,14 @@
         <a class="nav-link" href="/api/products">API</a>
       </li>
     </ul>
+    {% if app.user %}
     <form class="form-inline my-2 my-lg-0">
       {# <input class="form-control mr-sm-2" type="text" placeholder="Search"> #}
-      <a class="btn btn-primary my-2 my-sm-0" href="/products/new">New Product</a>
+      <a class="btn btn-primary mx-2 my-sm-0" href="/products/new">New Product</a>
+      <a class="btn btn-secondary my-sm-0" href="/logout">Logout</a>
     </form>
+    {% else %}
+      <a class="btn btn-primary my-2 my-sm-0" href="/login">login</a>
+    {% endif %}
   </div>
 </nav>

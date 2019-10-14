@@ -21,20 +21,30 @@
         </div>
     </div>
     {# add comment review #}
-    <div class="row mt-3">
-        <div class="card text-left" style="width: 100%;">
-            <div class="card-body">
-                <h4 class="card-title">Write a Review</h4>
-                {{form_start(form)}}
-                {{form_row(form.rating, {"attr" : {"class" : "form-control mb-2"}})}}
-                {{form_row(form.body, {"attr" : {"class" : "form-control mb-2"}})}}
-                <button type="submit" class="btn btn-primary btn-block">
-                    Add your Review
-                </button>
-                {{form_end(form)}}
+    {% if app.user %}
+        <div class="row mt-3">
+            <div class="card text-left" style="width: 100%;">
+                <div class="card-body">
+                    <h4 class="card-title">Write a Review</h4>
+                    {{form_start(form)}}
+                    {{form_row(form.rating, {"attr" : {"class" : "form-control mb-2"}})}}
+                    {{form_row(form.body, {"attr" : {"class" : "form-control mb-2"}})}}
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Add your Review
+                    </button>
+                    {{form_end(form)}}
+                </div>
             </div>
         </div>
-    </div>
+    {% else %}
+        <div class="row mt-3">
+            <div class="alert alert-warning text-center" style="width: 100%;" role="alert">
+                <a href="/login">
+                <strong>login to make a comment </strong>
+                </a>
+            </div>
+        </div>
+    {% endif %}
     {# show reviews and comments #}
     <div class="row mt-3">
         {% for review in product.reviews %}
