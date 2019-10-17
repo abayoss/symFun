@@ -30,6 +30,10 @@ security:
             pattern: ^/api/register
             stateless: true
             anonymous: true
+        products:
+            pattern: ^/api/products
+            stateless: true
+            anonymous: true
         product:
             pattern: ^/api/product/[0-9]+
             stateless: true

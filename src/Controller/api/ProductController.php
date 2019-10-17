@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Service\ImageUploader;
 
 class ProductController extends AbstractController
@@ -39,6 +38,7 @@ class ProductController extends AbstractController
     {
         $req = $request->request;
         $product = new Product;
+        $product->setUser($this->getUser());
         if (
             !$req->get('title')
             & !$req->get('description')
@@ -83,6 +83,9 @@ class ProductController extends AbstractController
      */
     public function updateProduct(Product $product, Request $request, ObjectManager $manager, ImageUploader $imageUploader)
     {
+        if ($this->getUser() !== $product->getUser()) {
+            return $this->json(["code"=> 401, 'message' => 'not authorized'], 401);
+        }
         $req = $request->request;
         if (
             !$req->get('title')
@@ -119,6 +122,9 @@ class ProductController extends AbstractController
      */
     public function deleteProduct(Product $product, ObjectManager $manager)
     {
+        if ($this->getUser() !== $product->getUser()) {
+            return $this->json('not authorized', 401);
+        }
         $manager->remove($product);
         $manager->flush();
 
@@ -129,8 +135,12 @@ class ProductController extends AbstractController
      */
     public function addProductReview(Product $product, Request $request, ObjectManager $manager)
     {
+        if (!$this->getUser()) {
+            return $this->json(["code"=> 401, 'message' => 'not authorized'], 401);
+        }
         $req = $request->request;
         $review = new Review();
+        $review->setUser($this->getUser());
         $review->setMockUser('mock User');
         $review->setProduct($product);
         $review->setCreatedAt(new \DateTime());
@@ -148,6 +158,9 @@ class ProductController extends AbstractController
      */
     public function deleteProductReview(Review $review, ObjectManager $manager)
     {
+        if ($this->getUser() !== $review->getUser()) {
+            return $this->json(["code"=> 401, 'message' => 'not authorized'], 401);
+        }
         $manager->remove($review);
         $manager->flush();
 

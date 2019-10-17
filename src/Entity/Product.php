@@ -56,6 +56,11 @@ class Product
      */
     private $reviews;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="products")
+     */
+    private $user;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -141,6 +146,18 @@ class Product
                 $review->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?user
+    {
+        return $this->user;
+    }
+
+    public function setUser(?user $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

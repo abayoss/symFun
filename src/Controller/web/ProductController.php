@@ -12,7 +12,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Service\ImageUploader;
@@ -30,8 +29,11 @@ class ProductController extends AbstractController
     /**
      * @Route("/product/{id}", name="getProduct", methods={"POST","GET"})
      */
-    public function getProduct(Product $product, Request $request, ObjectManager $manager)
+    public function getProduct(Product $product = null, Request $request, ObjectManager $manager)
     {
+        if (!$product) {
+            return $this->redirectToRoute('products');
+        }
         // add Review 
         $review = new Review();
         $form = $this->createForm(ProductReviewType::class, $review);
@@ -39,6 +41,7 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $review = $form->getData();
             $review->setMockUser('mock User');
+            $review->setUser($this->getUser());
             $review->setProduct($product);
             $review->setCreatedAt(new \DateTime());
 
@@ -54,10 +57,11 @@ class ProductController extends AbstractController
      * @Route("/products/new", name="newProduct", methods={"POST","GET"})
      * @Route("/product/edit/{id}", name="updateProduct", methods={"POST","GET"})
      */
-    public function newProduct(Product $product = null, Request $request, ObjectManager $manager, ImageUploader $imageUploader)
+    public function submitProduct(Product $product = null, Request $request, ObjectManager $manager, ImageUploader $imageUploader)
     {
         if (!$product) {
             $product = new Product();
+            $product->setUser($this->getUser());
         }
 
         $form = $this->createForm(ProductType::class, $product);
@@ -90,6 +94,9 @@ class ProductController extends AbstractController
      */
     public function deleteProduct(Product $product, ObjectManager $manager)
     {
+        if ($this->getUser() !== $product->getUser()) {
+            return $this->json('not authorized', 401);
+        }
         $manager->remove($product);
         $manager->flush();
         return $this->json('product deleted');
@@ -99,6 +106,9 @@ class ProductController extends AbstractController
      */
     public function deleteProductReview(Review $review, ObjectManager $manager)
     {
+        if ($this->getUser() !== $review->getUser()) {
+            return $this->json('not authorized', 401);
+        }
         $manager->remove($review);
         $manager->flush();
         return $this->json('review deleted');
