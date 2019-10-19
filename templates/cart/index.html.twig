@@ -1,0 +1,57 @@
+{% extends "base.html.twig" %} {% block title %}Cart {% endblock %} {% block
+body %}
+<h2>Your cart 🛒</h2>
+
+{% if cartWithProducts | length > 0 %}
+<table class="table table-striped">
+  <thead class="thead-inverse">
+    <tr>
+      <th>image</th>
+      <th>Title</th>
+      <th>Description</th>
+      <th>price</th>
+      <th>Quantity</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cartWithProducts %}
+    <tr>
+      <td>
+        <img
+          onclick="location.href='/product/{{ item.product.id }}'"
+          style="height:100px;"
+          src="{{ item.product.image }}?{{ item.product.id }}"
+          class="img-fluid"
+          alt="{{ item.product.title }}"
+        />
+      </td>
+      <td onclick="location.href='/product/{{ item.product.id }}'">
+        {{ item.product.title }}
+      </td>
+      <td onclick="location.href='/product/{{ item.product.id }}'">
+        {{ item.product.description }}
+      </td>
+      <td>{{ item.product.price }} $</td>
+      <td>{{ item.quantity }}</td>
+      <td>
+        <a
+          href=" {{ path('deleteCartProduct', { id: item.product.id }) }} "
+          class="btn btn-danger"
+          >🗑 Delete</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="3" class="text-right">Tottal :</td>
+      <td>{{ totall }} $</td>
+      <td colspan="2">
+        <button type="button" class="btn btn-warning btn btn-block">Make your order</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% else %}
+<p>no products</p>
+{% endif %} {% endblock %}

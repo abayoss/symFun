@@ -19,6 +19,8 @@
                     <button onclick="deleteProduct({{product.id}})" class="btn btn-danger btn-sm">Delete</button>
                     <button onclick="location.href ='edit/{{product.id}}'" class="btn btn-warning btn-sm mx-2">Edit</button>
                 {% endif %}
+                    <button onclick="location.href='/cart/add/{{product.id}}'"  class="btn btn-warning btn-sm my-3 btn-block">add to cart 🛒</button>
+                
             </div>
         </div>
     </div>
