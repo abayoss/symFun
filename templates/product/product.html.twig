@@ -15,7 +15,7 @@
                 <p class="card-text">{{product.description}}</p>
                 <p class="card-text">{{product.price}}
                     $</p>
-                {% if product.user == app.user %}
+                {% if app.user and product.user == app.user %}
                     <button onclick="deleteProduct({{product.id}})" class="btn btn-danger btn-sm">Delete</button>
                     <button onclick="location.href ='edit/{{product.id}}'" class="btn btn-warning btn-sm mx-2">Edit</button>
                 {% endif %}
