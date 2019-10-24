@@ -3,6 +3,8 @@ Symfony Demo Application
 
 The goal here is to give u a basic summury example of what is possible with this framework
 
+![](https://i.imgur.com/g8HtDv2.png)
+
 What you can learn
 ------------------
 
@@ -18,8 +20,6 @@ What you can learn
 
 Screenshots
 -----------
-
-![](https://i.imgur.com/g8HtDv2.png)
 
 ![](https://i.imgur.com/bX3xoAg.png)
 
