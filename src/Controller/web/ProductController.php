@@ -59,6 +59,11 @@ class ProductController extends AbstractController
      */
     public function submitProduct(Product $product = null, Request $request, ObjectManager $manager, ImageUploader $imageUploader)
     {
+        if ($product) {
+            if ($product->getUser() !== $this->getUser()) {
+                return $this->redirectToRoute('products');
+            }
+        }
         if (!$product) {
             $product = new Product();
             $product->setUser($this->getUser());
