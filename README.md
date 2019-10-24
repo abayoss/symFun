@@ -16,6 +16,13 @@ What you can learn
  * getting and setting up the session.
  * User authentication, the make:user Security command.  
 
+Screenshots
+-----------
+
+![](https://i.imgur.com/g8HtDv2.png)
+
+![](https://i.imgur.com/RkiZh16.png)
+
 Requirements
 ------------
 
