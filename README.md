@@ -21,6 +21,8 @@ Screenshots
 
 ![](https://i.imgur.com/g8HtDv2.png)
 
+![](https://i.imgur.com/bX3xoAg.png)
+
 ![](https://i.imgur.com/RkiZh16.png)
 
 Requirements
